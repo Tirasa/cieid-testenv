@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>CIE ID Test Environment</name>
+  <groupId>net.tirasa.cieid</groupId>
+  <artifactId>cieid-testenv</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <properties>
+    <cas.version>6.2.7</cas.version>
+
+    <cas.conf.directory>${project.build.outputDirectory}</cas.conf.directory>
+
+    <targetJdk>11</targetJdk>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apereo.cas</groupId>
+      <artifactId>cas-server-webapp</artifactId>
+      <version>${cas.version}</version>
+      <type>war</type>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apereo.cas</groupId>
+      <artifactId>cas-server-support-x509-webflow</artifactId>
+      <version>${cas.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apereo.cas</groupId>
+      <artifactId>cas-server-support-saml-idp</artifactId>
+      <version>${cas.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apereo.cas</groupId>
+      <artifactId>cas-server-support-json-service-registry</artifactId>
+      <version>${cas.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>cieid</finalName>
+        
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version> 
+          <configuration>
+            <source>${targetJdk}</source>
+            <target>${targetJdk}</target>
+            <useIncrementalCompilation>false</useIncrementalCompilation>
+            <showWarnings>true</showWarnings>
+            <showDeprecation>true</showDeprecation>
+            <compilerArgument>-Xlint:unchecked</compilerArgument>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.1</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+          <recompressZippedFiles>false</recompressZippedFiles>
+          <packagingExcludes>WEB-INF/classes/services/**,WEB-INF/lib/*servlet-api*jar,WEB-INF/lib/*el-api*jar,WEB-INF/lib/*el-impl*jar</packagingExcludes>
+          <dependentWarExcludes>WEB-INF/classes/services/**,WEB-INF/lib/*servlet-api*jar,WEB-INF/lib/*el-api*jar,WEB-INF/lib/*el-impl*jar</dependentWarExcludes>
+          <archive>
+            <compress>false</compress>
+            <manifestFile>${project.build.directory}/war/work/org.apereo.cas/cas-server-webapp/META-INF/MANIFEST.MF
+            </manifestFile>
+          </archive>
+          <overlays>
+            <overlay>
+              <groupId>org.apereo.cas</groupId>
+              <artifactId>cas-server-webapp</artifactId>
+              <excludes>
+                <exclude>WEB-INF/lib/*servlet-api*jar</exclude>
+                <exclude>WEB-INF/lib/*el-api*jar</exclude>
+                <exclude>WEB-INF/lib/*el-impl*jar</exclude>
+                <exclude>WEB-INF/classes/services/**</exclude>
+              </excludes>
+            </overlay>
+          </overlays>
+        </configuration>
+      </plugin>
+    </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>docker</id>
+
+      <properties>
+        <skipTests>true</skipTests>
+
+        <cas.conf.directory>/opt/cas/conf</cas.conf.directory>
+      </properties>
+
+      <build>
+        <defaultGoal>clean verify</defaultGoal>
+
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <inherited>false</inherited>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.34.1</version>
+            <configuration>
+              <images>
+                <image>
+                  <name>tirasa/cieid-testenv:${project.version}</name>
+                  <build>
+                    <dockerFileDir>${project.build.outputDirectory}</dockerFileDir>
+                  </build>
+                </image>
+              </images>
+            </configuration>
+            <executions>
+              <execution>
+                <id>remove-cieid</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>remove</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>source-cieid</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>source</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>build-cieid</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>    
+  </profiles>
+</project>
