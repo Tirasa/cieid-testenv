@@ -101,6 +101,18 @@
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
+        <excludes>
+          <exclude>tomcat.jks</exclude>
+          <exclude>saml/*</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>tomcat.jks</include>
+          <include>saml/*</include>
+        </includes>
       </resource>
     </resources>
   </build>
