@@ -1,8 +1,8 @@
 #!/bin/bash
      
-#for cert in `ls /tmp/*pem`; do
-#  keytool -cacerts -storepass changeit -importcert -noprompt -alias `basename $cert` -file $cert
-#done
+for cert in `ls /tmp/*pem`; do
+  keytool -storepass password -keystore /opt/cas/tomcat.jks -import -alias `basename $cert` -file $cert -trustcacerts -noprompt
+done
 
 sed -i "s/https:\/\/localhost:8443/${CAS_SERVER_NAME//\//\\/}/g" /opt/cas/conf/saml/idp-metadata.xml
 

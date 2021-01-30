@@ -15,7 +15,7 @@ COPY *.properties /opt/cas/conf/
 #COPY services/*.json /opt/cas/conf/services/
 COPY saml/* /opt/cas/conf/saml/
 
-#COPY *.pem /tmp/
+COPY *.pem /tmp/
 
 COPY startup.sh /sbin
 RUN chmod 755 /sbin/startup.sh
