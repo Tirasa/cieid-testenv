@@ -90,6 +90,9 @@ organizationName	= match
 organizationalUnitName	= optional
 commonName		= supplied
 emailAddress		= optional
+serialNumber = optional
+givenName = optional
+surname = optional
 
 # For the 'anything' policy
 # At this point in time, you must list all acceptable 'object'
@@ -102,6 +105,9 @@ organizationName	= optional
 organizationalUnitName	= optional
 commonName		= supplied
 emailAddress		= optional
+serialNumber = optional
+givenName = optional
+surname = optional
 
 ####################################################################
 [ req ]
@@ -135,7 +141,8 @@ countryName_max			= 2
 stateOrProvinceName		= State or Province Name (full name)
 stateOrProvinceName_default	= Abruzzo
 
-localityName			= Pescara
+localityName            = Locality Name (eg, city)
+localityName_default	= Pescara
 
 0.organizationName		= Organization Name (eg, company)
 0.organizationName_default	= Tirasa
@@ -154,19 +161,22 @@ commonName_max			= 64
 #emailAddress_max		= 64
 
 serialNumber = Serial number
+serialNumber_max = 64
 
 givenName = Given name
+givenName_max = 64
 
 surname = Surname
+surname_max = 64
 
 # SET-ex3			= SET extension number 3
 
 [ req_attributes ]
-challengePassword		= A challenge password
-challengePassword_min		= 4
-challengePassword_max		= 20
+#challengePassword		= A challenge password
+#challengePassword_min		= 4
+#challengePassword_max		= 20
 
-unstructuredName		= An optional company name
+#unstructuredName		= An optional company name
 
 [ usr_cert ]
 
