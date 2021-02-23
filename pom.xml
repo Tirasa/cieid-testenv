@@ -26,7 +26,7 @@
   <packaging>war</packaging>
 
   <properties>
-    <cas.version>6.2.7</cas.version>
+    <cas.version>6.2.8</cas.version>
 
     <cas.conf.directory>${project.build.outputDirectory}</cas.conf.directory>
 
